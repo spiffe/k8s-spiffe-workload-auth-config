@@ -1,0 +1,14 @@
+apiVersion: apiserver.config.k8s.io/v1beta1
+kind: AuthenticationConfiguration
+jwt:
+    #abcdefg
+    - issuer:
+        url: https://oidc-discovery-provider.example.com
+        audiences:
+            - k8s-one
+        certificateAuthority: changeme
+      claimMappings:
+        username:
+            expression: 'claims.sub.startsWith("spiffe://example.com/k8s/one/nodes/")? claims.sub.replace("spiffe://example.com/k8s/one/nodes/", "system:node:"): claims.sub'
+        groups:
+            expression: 'claims.sub.startsWith("spiffe://example.com/k8s/k8s/one/nodes/")? ["system:nodes"]: []'

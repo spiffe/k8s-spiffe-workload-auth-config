@@ -1,0 +1,75 @@
+digraph G {
+//    rankdir  = LR;
+
+    subgraph cluster_main {
+        peripheries=0
+
+
+
+  spire_server[shape=box,label="SPIRE Server"]
+  spire_agent[shape=box,label="SPIRE Agent"]
+
+    subgraph cluster_clients {
+
+  k8s_spiffe_workload_auth_config[shape=box,label="K8s SPIFFE Workload Auth Config"]
+  k8s_spiffe_workload_jwt_exec_auth[shape=box,label="K8s SPIFFE Workload JWT Exec Auth"]
+  spiffe_oidc_discovery_provider[shape=box,label="SPIFFE OIDC Discovery Provider"]
+    }
+    subgraph cluster_api {
+
+  auth_config_yaml[shape=note,label="auth-config.yaml"]
+  kube_apiserver[shape=box,label="Kubernetes API Server"]
+}
+  kubelet[shape=box,label="Kubelet"]
+
+  spire_server -> spire_agent[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>HTTPS</td></tr></table>>]
+  spire_server -> spire_agent[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Identities</td></tr></table>>,color="blue",fontcolor="blue"]
+  spire_server -> spire_agent[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>JWT &amp; x509 Bundles</td></tr></table>>,color="Red",fontcolor="red"]
+
+  spire_agent -> k8s_spiffe_workload_auth_config[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Socket</td></tr></table>>]
+  spire_agent -> k8s_spiffe_workload_auth_config[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Identity</td></tr></table>>,color="blue",fontcolor="blue"]
+  spire_agent -> k8s_spiffe_workload_auth_config[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>x509 Bundle</td></tr></table>>,color="red",fontcolor="red"]
+
+  spire_agent -> spiffe_oidc_discovery_provider[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Socket</td></tr></table>>]
+  spire_agent -> spiffe_oidc_discovery_provider[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Identity</td></tr></table>>,color="blue",fontcolor="blue"]
+  spire_agent -> spiffe_oidc_discovery_provider[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>JWT Bundle</td></tr></table>>,color="red",fontcolor="red"]
+
+  spiffe_oidc_discovery_provider -> kube_apiserver[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>HTTPS</td></tr></table>>]
+  spiffe_oidc_discovery_provider -> kube_apiserver[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>JWT Bundle</td></tr></table>>,color="red",fontcolor="red"]
+  
+  k8s_spiffe_workload_auth_config -> auth_config_yaml[dir=both,label="Read / Write"]
+  k8s_spiffe_workload_auth_config -> auth_config_yaml[label="x509 Bundle",color="red",fontcolor="red"]
+  auth_config_yaml -> kube_apiserver[dir=back,label="Read"]
+  auth_config_yaml -> kube_apiserver[label="x509 Bundle",color="red",fontcolor="red"]
+
+  kube_apiserver -> kubelet[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>HTTPS</td></tr></table>>]
+  kube_apiserver -> kubelet[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Identity</td></tr></table>>,color="blue",fontcolor="blue"]
+
+  spire_agent -> k8s_spiffe_workload_jwt_exec_auth[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Socket</td></tr></table>>]  
+  spire_agent -> k8s_spiffe_workload_jwt_exec_auth[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Identity</td></tr></table>>,color="blue",fontcolor="blue"]  
+  k8s_spiffe_workload_jwt_exec_auth -> kubelet[dir=back,label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Execute</td></tr></table>>]
+  k8s_spiffe_workload_jwt_exec_auth -> kubelet[label=<<table cellpadding="10" border="0" cellborder="0"><tr><td>Identity</td></tr></table>>,color="blue",fontcolor="blue"]
+
+}
+    subgraph cluster_legend {
+    label = <<table cellpadding="10" border="0" cellborder="0"><tr><td><b>Legend</b></td></tr></table>>;
+    node [shape=point]
+    {
+        rank=same
+        d0 [style = invis];
+        d1 [style = invis];
+        p0 [style = invis];
+        p1 [style = invis];
+        s0 [style = invis];
+        s1 [style = invis];
+        o0[style=invis];
+    }
+    p0 -> p1 [label="Identity Flow",color=blue,fontcolor=blue]
+    s0 -> s1 [label="CA Information Flow",color=red,fontcolor=red]
+    d0 -> d1 [label="Network / OS Call"]
+
+    d1 -> p0[style=invis]
+    p1 -> s0[style=invis]
+    }
+o0 -> spire_server [style=invis]
+}
