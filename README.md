@@ -11,6 +11,9 @@ A tool to help manage the Kubernetes AuthenticationConfiguration file by injecti
 
 In order to establish a trust relationship between Kubernetes and SPIRE for JWT authentication, Kubernetes needs to be configured to point at the spiffe-oidc-discovery-provider. This communication needs to be secured via a TLS certificate. When using SPIFFE itself to secure the discovery provider, Kubernetes needs to be made aware of the SPIFFE Trust Bundle. This is achieved via this tool by fetching the issuer and trust bundle from SPIFFE and updating the certificateAuthority property of the AuthenticationConfiguration file as needed.
 
+### Diagram
+![diagram](diagram.png)
+
 ### Building
 
 ```
