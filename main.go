@@ -98,7 +98,10 @@ func updateConfig(url string, cas string, source string, dest string) {
 	urlFound := false
 	var config yaml.Node
 	var caRef *yaml.Node
-	yaml.Unmarshal(b, &config)
+	err = yaml.Unmarshal(b, &config)
+	if err != nil {
+		log.Fatalf("Problem unmarshaling config: %v", err)
+	}
 	for _, d := range config.Content {
 		jwtFound := false
 		for _, j := range d.Content {
@@ -148,8 +151,15 @@ func updateConfig(url string, cas string, source string, dest string) {
 	if err != nil {
 		log.Fatalf("Problem creating file: %v", err)
 	}
-	yaml.NewEncoder(f).Encode(config.Content[0])
+	enc := yaml.NewEncoder(f)
+	err = enc.Encode(config.Content[0])
+	if err != nil {
+		log.Fatalf("Failed to encode content: %v", err)
+	}
 	name := f.Name()
 	f.Close()
-	os.Rename(name, dest)
+	err = os.Rename(name, dest)
+	if err != nil {
+		log.Fatalf("Failed to rename file into place: %v", err)
+	}
 }
