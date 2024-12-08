@@ -11,6 +11,7 @@ import (
 	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/go-spiffe/v2/svid/jwtsvid"
 	"github.com/spiffe/go-spiffe/v2/workloadapi"
+	"github.com/spiffe/spire/pkg/common/config"
 	"gopkg.in/yaml.v3"
 )
 
@@ -95,6 +96,7 @@ func updateConfig(url string, cas string, source string, dest string) {
 	if err != nil {
 		log.Fatalf("Problem opening file: %v", err)
 	}
+	b = []byte(config.ExpandEnv(string(b)))
 	urlFound := false
 	var config yaml.Node
 	var caRef *yaml.Node

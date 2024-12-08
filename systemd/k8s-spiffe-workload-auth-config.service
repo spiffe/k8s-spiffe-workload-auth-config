@@ -1,0 +1,40 @@
+[Unit]
+Description=Kubernetes SPIFFE Workload Authentication Configuration
+PartOf=spire-server.target
+After=network-online.target local-fs.target time-sync.target
+Before=remote-fs-pre.target
+Wants=network-online.target local-fs.target time-sync.target remote-fs-pre.target
+StartLimitIntervalSec=0
+
+[Service]
+WorkingDirectory=/tmp
+RuntimeDirectoryPreserve=true
+EnvironmentFile=-/etc/spiffe/default-trust-domain.env
+EnvironmentFile=-/etc/spiffe/k8s-spiffe-workload-auth-config.env
+Environment="SPIFFE_ENDPOINT_SOCKET=unix:///var/run/spire/agent/sockets/main/public/api.sock"
+ExecStart=/bin/k8s-spiffe-workload-auth-config /etc/kubernetes/auth-config.yaml /etc/kubernetes/pki/auth-config.yaml
+LockPersonality=true
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+PrivateDevices=false
+# Needed by plugins
+PrivateTmp=false
+ProtectControlGroups=true
+ProtectHome=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+ReadOnlyPaths=/
+ReadWritePaths=/etc/kubernetes
+Restart=always
+RestartSec=5s
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=true
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+TasksMax=infinity
+
+[Install]
+WantedBy=kubelet.service
