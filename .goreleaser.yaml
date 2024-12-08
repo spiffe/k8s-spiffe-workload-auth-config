@@ -33,6 +33,10 @@ archives:
       - goos: windows
         format: zip
 
+release:
+  extra_files:
+    - glob: ./systemd/*
+
 changelog:
   sort: asc
   filters:
