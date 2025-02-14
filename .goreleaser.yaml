@@ -34,8 +34,10 @@ archives:
         format: zip
     files:
       - systemd/*
-      - config/k8s-spiffe-workload-auth-config.env
       - config/auth-config.yaml
+      - config/k8s-spiffe-workload-auth-config.env
+      - config/k8s-spiffe-oidc-discovery-provider.conf
+      - config/k8s-spiffe-oidc-discovery-provider-helper.conf
       - LICENSE
       - README.md
 
