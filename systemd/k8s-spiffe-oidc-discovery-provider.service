@@ -10,7 +10,7 @@ WorkingDirectory=/tmp
 RuntimeDirectoryPreserve=true
 EnvironmentFile=-/etc/spiffe/default-trust-domain.env
 EnvironmentFile=-/etc/spiffe/k8s-oidc-discovery-provier.env
-ExecStart=/bin/spiffe-helper -config /etc/spiffe/k8s-oidc-discovery-provider-helper.conf
+ExecStart=/bin/spiffe-helper -config /usr/libexec/spiffe/k8s-oidc-discovery-provider/helper.conf
 # https://gist.github.com/ageis/f5595e59b1cddb1513d1b425a323db04
 LockPersonality=true
 MemoryDenyWriteExecute=true
