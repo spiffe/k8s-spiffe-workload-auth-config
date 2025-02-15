@@ -10,7 +10,7 @@ StartLimitIntervalSec=0
 WorkingDirectory=/tmp
 RuntimeDirectoryPreserve=true
 EnvironmentFile=-/etc/spiffe/default-trust-domain.env
-EnvironmentFile=-/etc/spiffe/k8s-spiffe-workload-auth-config.env
+EnvironmentFile=-/etc/spiffe/k8s-workload-auth-config.env
 Environment="SPIFFE_ENDPOINT_SOCKET=unix:///var/run/spire/agent/sockets/main/public/api.sock"
 ExecStart=/bin/k8s-spiffe-workload-auth-config /etc/kubernetes/auth-config.yaml /etc/kubernetes/pki/auth-config.yaml
 LockPersonality=true
