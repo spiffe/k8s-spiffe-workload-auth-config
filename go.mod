@@ -1,6 +1,6 @@
 module github.com/spiffe/k8s-spiffe-workload-auth-config
 
-go 1.23.2
+go 1.26.10
 
 require (
 	github.com/spiffe/go-spiffe/v2 v2.4.0
